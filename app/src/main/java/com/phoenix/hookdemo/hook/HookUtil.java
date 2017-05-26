@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.phoenix.hookdemo.DebugLog;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -17,7 +19,6 @@ import java.lang.reflect.Proxy;
  */
 
 public class HookUtil {
-    private final static String TAG = "HookUtil";
     private Class<?> proxyActivityCls;
     private Context mContext;
 
@@ -54,7 +55,7 @@ public class HookUtil {
             //替换原来的IActivityManager
             instanceField.set(singletonObj, proxy);
         } catch (Exception e) {
-            Log.e(TAG,"hookAM");
+            DebugLog.e("hookAM");
             e.printStackTrace();
         }
     }
@@ -110,14 +111,14 @@ public class HookUtil {
             Field launchActivityConstantField = handlerObj.getClass().getDeclaredField("LAUNCH_ACTIVITY");
             launchActivityConstantField.setAccessible(true);
             Object obj = launchActivityConstantField.get(null);
-            Log.d(TAG,"LAUNCH_ACTIVITY="+obj);
+            DebugLog.d("LAUNCH_ACTIVITY="+obj);
 
             Field callbackFiled = Handler.class.getDeclaredField("mCallback");
             callbackFiled.setAccessible(true);
             //再次之前应该先获取callback的对象，判断是否为空，若不为空需要特殊处理
             callbackFiled.set(handlerObj, new ActivityThreadHandlerCallback((Handler) handlerObj));
         } catch (Exception e) {
-            Log.e(TAG,"hookActivityThread");
+            DebugLog.e("hookActivityThread");
             e.printStackTrace();
         }
     }
@@ -132,7 +133,7 @@ public class HookUtil {
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == 100) {
-                Log.d(TAG,"launchActivity");
+                DebugLog.d("launchActivity");
                 handleLaunchActivity(msg);
             }
             handler.handleMessage(msg);

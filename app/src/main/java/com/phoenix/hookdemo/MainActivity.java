@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
     }
 
     public void goNext(View v){
+        DebugLog.d("goNext");
         Intent intent = new Intent();
         ComponentName componentName = new ComponentName(this,SecondActivity.class);
         intent.setComponent(componentName);
